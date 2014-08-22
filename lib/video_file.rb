@@ -64,14 +64,17 @@ module VideoFile
         end
         def new_filename(pattern: "::title:: - S::season_str::E::episode_str:: - ::episode_name::::ext::", directory: nil)
             pattern.gsub!( /::(.*?)::/ ) { '#{@'+$1+'}' }
-            pattern.gsub!(/[\/\\?\*:\|"<>]/, '')
-            pattern.gsub!(/  /, ' ')
-            pattern.gsub!(/\.$/, '')
+            filename = eval( '"' + pattern + '"' )
+            filename.gsub!(/[\/\\?\*:\|"<>]/, '')
+            filename.gsub!(/  /, ' ')
+            filename.gsub!(/\.$/, '')
             if directory then
                 directory.gsub!( /::(.*?)::/ ) { '#{@'+$1+'}' }
-                pattern = File.join(directory, pattern)
+                directory = eval( '"' + directory + '"' )
+                File.join(directory, filename)
+            else
+                filename
             end
-            eval( '"' + pattern + '"' )
         end
     end
 end
